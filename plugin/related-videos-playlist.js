@@ -87,11 +87,16 @@ videojs.registerPlugin('relatedVideosPlaylist', function() {
       videoList.appendChild(videoWrapper);
       for (i = 0; i < iMax; i++) {
         thumbnailLink = createEl('a', {
-          href: 'javascript:loadAndPlay(' + i + ')'
-        })
+          href: '#'
+        });
         thumbnailImage = createEl('img', {
           class: 'video-thumbnail',
           src: videoData[i].thumbnail
+        });
+        thumbnailLink.setAttribute('data-index', i);
+        thumbnailLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          loadAndPlay(this.getAttribute('data-index'));
         });
         videoWrapper.appendChild(thumbnailLink);
         thumbnailLink.appendChild(thumbnailImage);
