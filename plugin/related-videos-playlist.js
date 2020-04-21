@@ -2,7 +2,8 @@ videojs.registerPlugin('relatedVideosPlaylist', function() {
     var myPlayer = this,
         loadAndPlay,
         myPlayer,
-        returnedPlaylist;
+        returnedPlaylist,
+        nextVideoTimeout;
 
     videojs('myPlayerID').ready(function () {
       var playlistID = 4609649081001,
@@ -34,6 +35,20 @@ videojs.registerPlugin('relatedVideosPlaylist', function() {
           end: 'play'
         }]
       });
+
+      // Listen for end of video event
+      // Set timeout to play next video in playlist after 5 seconds
+      myPlayer.on("ended", function () {
+        nextVideoTimeout = setTimeout(function() {
+          loadAndPlay(1);
+        }, 5000);
+      });
+
+      // This will get triggered whenever the timestamp on the video changes (during playback, when user manually skips to another time etc..)
+      // Since when this gets triggered, we are no longer at the "end" of the video, we will cancle the timeout (nextVideoTimeout) for the autoplay
+      myPlayer.on("timeupdate", function () {
+        clearTimeout(nextVideoTimeout);
+      });    
     });
 
     /**
